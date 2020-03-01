@@ -26,6 +26,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: 'cardPost',
   props: {
@@ -33,8 +35,14 @@ export default {
   },
   methods: {
     like () {
-      this.post.hasBeenLiked ? this.post.likes-- : this.post.likes++
-      this.post.hasBeenLiked = !this.post.hasBeenLiked
+      this.updatePost(this.post.id, {
+          hasBeenLiked: this.post.hasBeenLiked, likes: this.post.likes
+      })
+    },
+    updatePost (id, data) {
+        axios.put(`http://localhost:3000/api/posts/${id}`, data)
+        .then(res => res)
+        .catch(e => console.error(e))
     }
   }
 }

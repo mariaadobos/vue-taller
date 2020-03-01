@@ -25,14 +25,15 @@
 import TheHeader from '@/components/TheHeader.vue'
 import TheContainer from '@/components/TheContainer.vue'
 import TheFooter from '@/components/TheFooter.vue'
-import posts from '@/data/posts'
+// import posts from '@/data/posts'
 import filters from '@/data/filters'
+import axios from 'axios';
 
 export default {
   name: 'Home',
   data () {
     return {
-      posts,
+      posts: [],
       filters,
       caption: '',
       image: '',
@@ -45,6 +46,13 @@ export default {
     TheFooter
   },
   methods: {
+    created () {
+      axios.get('http://localhost:3000/api/posts')
+      .then(response => {
+        this.posts = response.data
+      })
+      .catch(e => console.log(e))
+    },
     handleGoToHome () {
       this.caption = ''
       this.image = ''
@@ -62,6 +70,7 @@ export default {
     }
     this.posts.unshift(post)
     this.handleGoToHome()
+    this.sendPost(post)
   },
     handleUploadImage (ev) {
     const files = ev.target.files
@@ -77,6 +86,11 @@ export default {
   },
     handleFilterSelected (ev) {
     this.filterType = ev.filter
+  },
+  sendPost (post) {
+    axios.post('http://localhost:3000/api/posts', post)
+    .then(res => res)
+    .catch(e => console.error(e))
   }
   }
 }
